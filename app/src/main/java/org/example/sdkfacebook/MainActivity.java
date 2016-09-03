@@ -27,23 +27,29 @@ import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Variables uso para conectar facebook
     private CallbackManager callbackManager;
     private LoginButton loginButton;
-    private AdView adView;
     private ImageView fb_image;
     private Button exitButton;
     private TextView txt_userinfo;
+
+    //Variable tipo anuncio de google
+    private AdView adView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Inicializacion y clave conectar a facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         getFbKeyHash("0zMiK1BfmligxfVVIkgzqwBdirk=");
 
         setContentView(R.layout.activity_main);
 
+        //Solicitud de publicidad
         adView = (AdView) findViewById(R.id.ad_view);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         adView.loadAd(adRequest);
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         txt_userinfo = (TextView) findViewById(R.id.txt_userinfo);
 
+        //Accion para ingresar con los credenciales de facebook
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
+            //Si el usario cancela la conecion a facebook
             @Override
             public void onCancel() {
                 Toast.makeText(getApplicationContext(),"Inicio session Cancelado", Toast.LENGTH_SHORT).show();
@@ -77,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 exitButton.setVisibility(View.INVISIBLE);
             }
 
+            //Si hay algun error
             @Override
             public void onError(FacebookException error) {
                 Toast.makeText(getApplicationContext(),"Inicio session Error", Toast.LENGTH_SHORT).show();
@@ -87,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Funcion de cerrar sesion en facebook
         exitButton = (Button) findViewById(R.id.btn_logout);
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Facebook autenticacion
     public void getFbKeyHash(String packageName) {
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -126,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         callbackManager.onActivityResult(reqCode, resCode, i);
     }
 
+    //Cierra el anuncio
     @Override
     protected void onDestroy() {
         if (adView != null){
@@ -134,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    //Retoma el anuncio
     @Override
     protected void onResume() {
         if (adView != null){
@@ -142,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    //Pausa el anuncio
     @Override
     protected void onPause() {
         if (adView != null) {
